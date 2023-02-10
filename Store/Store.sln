@@ -5,6 +5,12 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store", "Store\Store.csproj", "{BCCECD11-08A7-44C1-929E-8566C5524EEC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{0498DBF4-64A7-4F90-AB49-D339AC8A2530}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastucture", "Infrastucture", "{7FCA0B80-63AE-4CB9-8783-F948942DC85A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.Memory", "Store.Memory\Store.Memory.csproj", "{9928A777-B14E-407B-8CFA-8B64F36744D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +21,17 @@ Global
 		{BCCECD11-08A7-44C1-929E-8566C5524EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCCECD11-08A7-44C1-929E-8566C5524EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCCECD11-08A7-44C1-929E-8566C5524EEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9928A777-B14E-407B-8CFA-8B64F36744D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9928A777-B14E-407B-8CFA-8B64F36744D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9928A777-B14E-407B-8CFA-8B64F36744D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9928A777-B14E-407B-8CFA-8B64F36744D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BCCECD11-08A7-44C1-929E-8566C5524EEC} = {0498DBF4-64A7-4F90-AB49-D339AC8A2530}
+		{9928A777-B14E-407B-8CFA-8B64F36744D7} = {7FCA0B80-63AE-4CB9-8783-F948942DC85A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {669B8013-E8D8-4889-A907-3DA0200F7035}
