@@ -8,13 +8,18 @@ namespace Store
         public string Title { get;}
         public string Isbn { get; set; }
         public string Author { get; set; }
-        public Book(int id,string isbn,string author, string title)
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public Book(int id,string isbn,string author, string title,string description,decimal price)
         {
             Title = title;
             Id = id;
             Isbn = isbn;
             Author = author;
+            Description = description;
+            Price = price;
         }
+      
         internal static bool IsIsbn(string s)
         {
             if (s == null)
