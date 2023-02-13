@@ -16,6 +16,7 @@ builder.Services.AddSession(option =>
 builder.Services.AddSingleton<IBookRepository, BookRepository>();
 builder.Services.AddSingleton<BookService>();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
