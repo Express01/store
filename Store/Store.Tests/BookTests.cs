@@ -38,6 +38,7 @@ namespace Store.Tests
             bool actual = Book.IsIsbn("xxx IsBn 123-456-789 012   yyy");
             Assert.False(actual);
         }
+      
 
     }
 }

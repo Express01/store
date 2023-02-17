@@ -14,6 +14,7 @@ builder.Services.AddSession(option =>
     option.Cookie.IsEssential = true;
 });
 builder.Services.AddSingleton<IBookRepository, BookRepository>();
+builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 builder.Services.AddSingleton<BookService>();
 
 
@@ -32,8 +33,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
 app.UseSession();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
