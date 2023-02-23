@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Store.Contractors;
+using Store.Messages;
 using Store.Web.Models;
+using System.Text.RegularExpressions;
 
 namespace Store.Web.Controllers
 {
@@ -7,12 +10,18 @@ namespace Store.Web.Controllers
     {
         private readonly IBookRepository bookRepository;
         private readonly IOrderRepository orderRepository;
-        public OrderController(IBookRepository bookRepository, IOrderRepository orderRepository)
+        private readonly IEnumerable<IDeliveryService> deliveryServices;
+        private readonly INotificationService notificationService;
+        public OrderController(IBookRepository bookRepository, IOrderRepository orderRepository, INotificationService notificationService,
+            IEnumerable<IDeliveryService> deliveryServices)
         {
             this.bookRepository = bookRepository;
             this.orderRepository = orderRepository;
+            this.notificationService = notificationService;
+            this.deliveryServices = deliveryServices;
         }
-        
+
+        [HttpGet]
         public ActionResult Index() 
         {
           
@@ -67,7 +76,7 @@ namespace Store.Web.Controllers
 
             SaveOrderAndCart(order, cart);
 
-            return RedirectToAction("Index", "Book", new { bookId });
+            return RedirectToAction("Index", "Book");
         }
 
         private void SaveOrderAndCart(Order order, Cart cart)
@@ -94,15 +103,100 @@ namespace Store.Web.Controllers
             }
             return (order, cart);
         }
-        public IActionResult  RemoveItem(int id) 
+        [HttpPost]
+        public IActionResult  RemoveItem(int bookId) 
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
-            order.RemoveItem(id);
+            order.RemoveItem(bookId);
 
             SaveOrderAndCart(order, cart);
 
-            return RedirectToAction("Index", "Book", new { id });
+            return RedirectToAction("Index", "Order");
         }
-      
+        [HttpPost]
+        public IActionResult SendConfirmationCode(int id,string cellPhone)
+        {
+            var order = orderRepository.GetById(id);
+            var model = Map(order);
+            if (!IsValidCellPhone(cellPhone))
+            {
+                model.Errors["cellPhone"] = "Номер телефона не соответствует";
+                return View("Index", model);
+            }
+            int code = 1111;
+            HttpContext.Session.SetInt32(cellPhone, code);
+            notificationService.SendConfirmationCode(cellPhone, code);
+
+            return View("Confirmation",new ConfirmationModel { CellPhone = cellPhone,OrderId=id });
+        }
+        private bool IsValidCellPhone(string cellPhone)
+        {
+            if (cellPhone == null)
+                return false;
+            cellPhone = cellPhone.Replace("", "")
+                .Replace("-", "");
+            return Regex.IsMatch(cellPhone, @"^\+?\d{11}$");
+        }
+        [HttpPost]
+        public IActionResult Confirmate(int id,string cellPhone,int code) 
+        {
+            int? storedCode=HttpContext.Session.GetInt32(cellPhone);
+            if (storedCode==null)
+            {
+                return View("Confirmation", new ConfirmationModel {
+                    CellPhone = cellPhone, OrderId = id,
+                    Errors = new Dictionary<string, string> 
+                    {
+                        { "code", "Пустой код, повторите отправку" }
+                    },
+                    });
+            }
+            if(storedCode!=code)
+            {
+                return View("Confirmation", new ConfirmationModel
+                {
+                    CellPhone = cellPhone,
+                    OrderId = id,
+                    Errors = new Dictionary<string, string>
+                    {
+                        { "code", "Отличается от отправленного." }
+                    },
+                });
+            }
+            //
+            HttpContext.Session.Remove(cellPhone);
+            var model = new DeliveryModel
+            { 
+                OrderId=id,
+                Methods= deliveryServices.ToDictionary(service => service.UniqueCode,
+                                                     service => service.Title)
+            };
+
+            
+
+            return View("DeliveryMethod",model);
+        }
+
+        [HttpPost]
+        public IActionResult StartDelivery(int id,string uniqueCode)
+        {
+            var deliveryService = deliveryServices.Single(service => service.UniqueCode == uniqueCode);
+                var order = orderRepository.GetById(id);
+            var form = deliveryService.CreateForm(order);
+            return View("DeliveryStep",form);
+
+        }
+        [HttpPost]
+        public IActionResult NextDelivery(int id,string uniqueCode,int step,Dictionary<string,string>values)
+        {
+            var deliveryService = deliveryServices.Single(service => service.UniqueCode == uniqueCode);
+            var form = deliveryService.MoveNext(id, step, values);
+            if (form.IsFinal)
+            {
+                return null;
+            }
+            return View("DeliveryStep", form);
+        }
+
     }
 }

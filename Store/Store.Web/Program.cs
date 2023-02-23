@@ -1,12 +1,16 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Store;
+using Store.Contractors;
 using Store.Memory;
+using Store.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
+builder.Services.AddSingleton<IDeliveryService,PostamateDeliveryService>();
 builder.Services.AddSession(option => 
 { 
     option.IdleTimeout = TimeSpan.FromMinutes(20);
