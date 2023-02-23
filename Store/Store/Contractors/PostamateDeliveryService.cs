@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace Store.Contractors
 {
-    public class PostamateDeliveryService : IDeliveryService
+    public class PostamateDeliveryService : IPaymentService
     {
         private static IReadOnlyDictionary<string, string> cities = new Dictionary<string, string>
         {
@@ -47,7 +47,7 @@ namespace Store.Contractors
                       .AddField(new SelectionField("Город", "city", "1", cities));
         }
 
-        public Form MoveNext(int orderId, int step, IReadOnlyDictionary<string, string> values)
+        public Form MoveNextForm(int orderId, int step, IReadOnlyDictionary<string, string> values)
         {
             if (step == 1)
             {
@@ -89,9 +89,11 @@ namespace Store.Contractors
                 { nameof(postamateName), postamateName },
             };
 
-            var description = $"Город: {cityName}\nПостамат: {postamateName}";
+           var description = $"Город: {cityName}\nПостамат: {postamateName}";
 
             return new OrderDelivery(Name, description, 150m, parameters);
         }
+
+        
     }
 }

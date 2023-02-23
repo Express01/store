@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
-builder.Services.AddSingleton<IDeliveryService,PostamateDeliveryService>();
+builder.Services.AddSingleton<IPaymentService,PostamateDeliveryService>();
 builder.Services.AddSession(option => 
 { 
     option.IdleTimeout = TimeSpan.FromMinutes(20);
