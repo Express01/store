@@ -17,11 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.Web", "Store.Web\Stor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.Tests", "Store.Tests\Store.Tests.csproj", "{9ACC3863-09D2-40CE-8F1A-A17BA955D5D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreWebContractors", "StoreWebContractors\StoreWebContractors.csproj", "{6D7E02E5-1A9F-4B57-B8AF-62C9D7A036F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreWebContractors", "StoreWebContractors\StoreWebContractors.csproj", "{6D7E02E5-1A9F-4B57-B8AF-62C9D7A036F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{354CD090-1B9D-49B9-AE93-C0E4120CC8E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.YandexKassa", "plugins\Store.YandexKassa\Store.YandexKassa.csproj", "{3734A07E-8DC2-462E-A1DC-6931ECB8AD6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.YandexKassa", "plugins\Store.YandexKassa\Store.YandexKassa.csproj", "{3734A07E-8DC2-462E-A1DC-6931ECB8AD6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,6 +3,9 @@ using Store;
 using Store.Contractors;
 using Store.Memory;
 using Store.Messages;
+using Store.YandexKassa;
+using StoreWebContractors;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,8 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
 builder.Services.AddSingleton<IPaymentService,CashPaymentService>();
 builder.Services.AddSingleton<IDeliveryService,PostamateDeliveryService>();
+builder.Services.AddSingleton<IPaymentService, YandexKassaPaymentService>();
+builder.Services.AddSingleton<IWebContractorService, YandexKassaPaymentService>();
 builder.Services.AddSession(option => 
 { 
     option.IdleTimeout = TimeSpan.FromMinutes(20);
@@ -44,5 +49,10 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapAreaControllerRoute(
+    name:"yandex.kassa",
+    areaName:"YandexKassa",
+    pattern: "YandexKassa/{controller=Home}/{action=Index}/{id?}"
+    );
 
 app.Run();

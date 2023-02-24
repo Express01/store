@@ -5,6 +5,6 @@ namespace StoreWebContractors
     {
         string UniqueCode { get; }
 
-        string GetUri { get; } 
+        string GetUri { get; }
     }
 }
