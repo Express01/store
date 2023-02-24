@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Store.Contractors                           //добаление служб сервисов доставки
 {
-    public interface IPaymentService
+    public interface IDeliveryService
     {
       public   string UniqueCode { get;  }
        public string Title { get; }

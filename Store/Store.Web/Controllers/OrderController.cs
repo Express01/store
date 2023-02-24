@@ -231,19 +231,13 @@ namespace Store.Web.Controllers
             if (form.IsFinal)
             {
                 var order = orderRepository.GetById(id);
-                order.Delivery = paymentService.GetDelivery(form);
+                order.Payment = paymentService.GetPayment(form);
                 orderRepository.Update(order);
-                var model = new DeliveryModel
-                {
-                    OrderId = id,
-                    Methods = paymentServices.ToDictionary(service => service.UniqueCode,
-                                                    service => service.Title)
-                };
+              
 
-
-                return View("PaymentMethod", model);
+                return View("Finish");
             }
-            return View("DeliveryStep", form);
+            return View("PaymentStep", form);
         }
 
     }

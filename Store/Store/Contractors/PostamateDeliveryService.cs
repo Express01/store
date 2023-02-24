@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace Store.Contractors
 {
-    public class PostamateDeliveryService : IPaymentService
+    public class PostamateDeliveryService : IDeliveryService
     {
         private static IReadOnlyDictionary<string, string> cities = new Dictionary<string, string>
         {

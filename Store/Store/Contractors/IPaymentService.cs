@@ -14,7 +14,7 @@ namespace Store.Contractors                           //добаление сл�
         Form CreateForm(Order order);            //создаем первый экран
 
         Form MoveNextForm(int orderId,int step,IReadOnlyDictionary<string,string>values);
-        OrderDelivery GetDelivery(Form form);
+        OrderPayment GetPayment(Form form);
 
     }
 }
