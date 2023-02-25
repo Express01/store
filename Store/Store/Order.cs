@@ -9,70 +9,95 @@ namespace Store
 {
     public class Order
     {
-        public int Id { get; }
-        private List<OrderItem> items;
-        public IReadOnlyCollection<OrderItem> Items
+        private readonly OrderDto dto;
+
+        public int Id => dto.Id;
+
+        public string CellPhone
         {
-            get { return items; }
-        }
-        public string CellPhone { get; set; }
-        public OrderDelivery Delivery { get; set; }
-        public int TotalCount => items.Sum(item => item.Count);
-        public OrderPayment Payment { get; set; }   
-
-
-
-        public decimal TotalPrice => items.Sum(item => item.Price * item.Count) + (Delivery?.Amount ?? 0m);
-
-
-        public Order(int id, IEnumerable<OrderItem> items)
-        {
-            if (items == null)
+            get => dto.CellPhone;
+            set
             {
-                throw new ArgumentNullException(nameof(items));
-            }
-            Id = id;
-            this.items = new List<OrderItem>(items);
-        }
-        public OrderItem GetItem(int bookId)
-        {
-            int index = items.FindIndex(item => item.BookId == bookId);
-            if (index == -1)
-                ThrowBookExeption("Book not found",bookId);
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException(nameof(CellPhone));
 
-            return items[index];
+                dto.CellPhone = value;
+            }
         }
-       
-        public void AddOrUpdateItem(Book book, int count)
+
+        public OrderDelivery Delivery
         {
-            if (book == null)
-             throw new ArgumentNullException(nameof(book));
-            int index = items.FindIndex(item => item.BookId == book.Id);
-            if (index == -1)
+            get
             {
-                items.Add(new OrderItem(book.Id, count, book.Price));
+                if (dto.DeliveryUniqueCode == null)
+                    return null;
+
+                return new OrderDelivery(
+                    dto.DeliveryUniqueCode,
+                    dto.DeliveryDescription,
+                    dto.DeliveryPrice,
+                    dto.DeliveryParameters);
             }
-            else
+            set
             {
-                items[index].Count += count;
+                if (value == null)
+                    throw new ArgumentException(nameof(Delivery));
+
+                dto.DeliveryUniqueCode = value.UniqueCode;
+                dto.DeliveryDescription = value.Description;
+                dto.DeliveryPrice = value.Price;
+                dto.DeliveryParameters = value.Parameters
+                                              .ToDictionary(p => p.Key, p => p.Value);
             }
-              
         }
-        public void RemoveItem(int bookId)
+
+        public OrderPayment Payment
         {
-            
-            int index=items.FindIndex(item=>item.BookId==bookId);
+            get
+            {
+                if (dto.PaymentServiceName == null)
+                    return null;
 
-            if (index == -1)
-                ThrowBookExeption("Order does not specified", bookId);
-            items.RemoveAt(index);
+                return new OrderPayment(
+                    dto.PaymentServiceName,
+                    dto.PaymentDescription,
+                    dto.PaymentParameters);
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentException(nameof(Payment));
 
+                dto.PaymentServiceName = value.UniqueCode;
+                dto.PaymentDescription = value.Description;
+                dto.PaymentParameters = value.Parameters
+                                             .ToDictionary(p => p.Key, p => p.Value);
+            }
         }
-        private  void ThrowBookExeption(string message,int bookId)
+
+        public OrderItemCollection Items { get; }
+
+        public int TotalCount => Items.Sum(item => item.Count);
+
+        public decimal TotalPrice => Items.Sum(item => item.Price * item.Count)
+                                   + (Delivery?.Price ?? 0m);
+
+        public Order(OrderDto dto)
         {
-            var exeption = new InvalidOperationException(message);
-            exeption.Data[("BookId")] = bookId;
-            
+            this.dto = dto;
+            Items = new OrderItemCollection(dto);
+        }
+
+        public static class DtoFactory
+        {
+            public static OrderDto Create() => new OrderDto();
+        }
+
+        public static class Mapper
+        {
+            public static Order Map(OrderDto dto) => new Order(dto);
+
+            public static OrderDto Map(Order domain) => domain.dto;
         }
     }
 } 

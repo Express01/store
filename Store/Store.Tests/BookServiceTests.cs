@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Store.Web.App;
 using System;
 using System.Collections.Generic;
 using System.Linq;
