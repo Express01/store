@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace Store.Contractors                           //добаление служб сервисов доставки
 {
-    public interface IDeliveryService
+    public interface IDeliveryService                  //изменено
     {
-      public   string UniqueCode { get;  }
-       public string Title { get; }
+        string Name { get; }
 
-        Form CreateForm(Order order);            //создаем первый экран
+        string Title { get; }
 
-        Form MoveNextForm(int orderId,int step,IReadOnlyDictionary<string,string>values);
+        Form FirstForm(Order order);
+
+        Form NextForm(int step, IReadOnlyDictionary<string, string> values);
+
         OrderDelivery GetDelivery(Form form);
 
     }

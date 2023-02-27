@@ -12,19 +12,19 @@ namespace Store.Memory
 
         };
 
-        public Book[] GetAllById(IEnumerable<int> bookIds)
+        public Book[] GetAllByIdAssync(IEnumerable<int> bookIds)
         {
             var foundBooks=from book in books
                            join bookId in bookIds on book.Id equals bookId select book;
             return foundBooks.ToArray();
         }
 
-        public Book[] GetAllByIsbn(string isbn)
+        public Book[] GetAllByIsbnAsync(string isbn)
         {
            return books.Where(book=>book.Isbn == isbn).ToArray();
         }
 
-        public Book[] GetAllByTitleOrAuthor(string query)
+        public Book[] GetAllByTitleOrAuthorAsync(string query)
         {
             return books.Where(book=>book.Author.Contains (query)||book.Title.Contains(query)).ToArray();
         }

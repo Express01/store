@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Store.Contractors
+namespace Store.Contractors                                     //изменено
 {
     public class PostamateDeliveryService : IDeliveryService
     {
@@ -36,18 +36,18 @@ namespace Store.Contractors
                 }
             }
         };
-        public string UniqueCode => "Postamate";
+        public string Name => "Postamate";
 
         public string Title => "Доставка через постаматы в Минске и Бобруйске";
 
-        public Form CreateForm(Order order)
+        public Form FirstForm(Order order)
         {
             return Form.CreateFirst(Name)
                       .AddParameter("orderId", order.Id.ToString())
                       .AddField(new SelectionField("Город", "city", "1", cities));
         }
 
-        public Form MoveNextForm(int orderId, int step, IReadOnlyDictionary<string, string> values)
+        public Form NextForm( int step, IReadOnlyDictionary<string, string> values)
         {
             if (step == 1)
             {

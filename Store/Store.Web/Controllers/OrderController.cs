@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Store.Contractors;
 using Store.Messages;
+using Store.Web.App;
 using Store.Web.Models;
 using StoreWebContractors;
 using System.Text.RegularExpressions;
 
-namespace Store.Web.Controllers
+namespace Store.Web.Controllers                  //изменено
 {
     public class OrderController : Controller
     {

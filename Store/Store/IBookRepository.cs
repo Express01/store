@@ -8,9 +8,12 @@ namespace Store
 {
     public interface IBookRepository
     {
-        Book[] GetAllById(IEnumerable<int> bookIds);
-        Book[] GetAllByIsbn(string isbn);
-        Book[]GetAllByTitleOrAuthor(string titleOrAuthor);
-        Book GetById(int id);
+        Task<Book[]> GetAllByIsbnAsync(string isbn);
+
+        Task<Book[]> GetAllByTitleOrAuthorAsync(string titleOrAuthor);
+
+        Task<Book> GetByIdAsync(int id);
+
+        Task<Book[]> GetAllByIdsAsync(IEnumerable<int> bookIds);
     }
 }
