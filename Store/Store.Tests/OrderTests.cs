@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Store.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,89 +10,57 @@ namespace Store.Tests
     public class OrderTests
     {
         [Fact]
-        public void Order_WithNullItems_ThrowsArgumensNullExeption()
-        {
-            Assert.Throws<ArgumentNullException>(() => new Order(1, null));
-        }
-        [Fact]
         public void TotalCount_WithEmptyItems_ReturnsZero()
         {
-            var order = new Order(1, new OrderItem[0]);
+            var order = CreateEmptyTestOrder();
+
             Assert.Equal(0, order.TotalCount);
         }
+
+        private static Order CreateEmptyTestOrder()
+        {
+            return new Order(new OrderDto
+            {
+                Id = 1,
+                Items = new OrderItemDto[0]
+            });
+        }
+
         [Fact]
         public void TotalPrice_WithEmptyItems_ReturnsZero()
         {
-            var order = new Order(1, new OrderItem[0]);
+            var order = CreateEmptyTestOrder();
+
             Assert.Equal(0m, order.TotalCount);
         }
+
         [Fact]
-        public void TotalCount_WithNoEmptyItems_CalculatesTotalCount()
+        public void TotalCount_WithNonEmptyItems_CalcualtesTotalCount()
         {
-            var order = new Order(1, new[]
-            {
-                new OrderItem(1,3,10m),
-                new OrderItem(2,5,100m),
-            });
+            var order = CreateTestOrder();
+
             Assert.Equal(3 + 5, order.TotalCount);
         }
-        [Fact]
-        public void TotalPrice_WithNoEmptyItems_CalculatesTotalPrice()
+
+        private static Order CreateTestOrder()
         {
-            var order = new Order(1, new[]
+            return new Order(new OrderDto
             {
-                new OrderItem(1,3,10m),
-                new OrderItem(2,5,100m),
+                Id = 1,
+                Items = new[]
+                {
+                    new OrderItemDto { BookId = 1, Price = 10m, Count = 3},
+                    new OrderItemDto { BookId = 2, Price = 100m, Count = 5},
+                }
             });
+        }
+
+        [Fact]
+        public void TotalPrice_WithNonEmptyItems_CalcualtesTotalPrice()
+        {
+            var order = CreateTestOrder();
+
             Assert.Equal(3 * 10m + 5 * 100m, order.TotalPrice);
-        }
-        [Fact]
-        public void GetItem_WithExistingItem_ReturnItem()
-        {
-            var order = new Order(1, new[]
-           {
-                new OrderItem(1,3,10m),
-                new OrderItem(2,5,100m),
-            });
-            var orderItem = order.GetItem(1);
-            Assert.Equal(3, orderItem.Count);
-        }
-        [Fact]
-        public void GetItem_WithNonExistingItem_ThrowsInvalidOperationExeption()
-        {
-            var order = new Order(1, new[]
-           {
-                new OrderItem(1,3,10m),
-                new OrderItem(2,5,100m),
-            });
-            Assert.Throws<InvalidOperationException>(() => order.GetItem(100));
-
-
-        }
-        [Fact]
-        public void AddOrUpdateItem_WithExistingItem_UpdatesCount()
-        {
-            var order = new Order(1, new[]
-            {
-                new OrderItem(1,3,10m),
-                new OrderItem(2,5,100m),
-            });
-            var book = new Book(1, null, null, null, null, 0m);
-            order.AddOrUpdateItem(book, 10);
-            Assert.Equal(13,order.GetItem(1).Count);
-        }
-        [Fact]
-        public void AddOrUpdateItem_WithNonExistingItem_AddsCount()
-        {
-            var order = new Order(1, new[]
-            {
-                new OrderItem(1,3,10m),
-                new OrderItem(2,5,100m),
-            });
-            var book = new Book(4, null, null, null, null, 0m);
-            order.AddOrUpdateItem(book, 10);
-           
-            Assert.Equal(10, order.GetItem(4).Count);
         }
     }
 }

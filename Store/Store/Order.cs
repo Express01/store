@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Store.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Store                                //изменено
+namespace Store                                //изменено    эрик эванс ддд
 {
     public class Order
     {
@@ -99,5 +100,6 @@ namespace Store                                //изменено
 
             public static OrderDto Map(Order domain) => domain.dto;
         }
+        
     }
 } 
