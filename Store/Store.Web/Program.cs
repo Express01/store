@@ -1,17 +1,21 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Store;
 using Store.Contractors;
-using Store.Memory;
+using Store.Data.EF;
 using Store.Messages;
 using Store.Web.App;
 using Store.YandexKassa;
 using StoreWebContractors;
 using System;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddEfRepositories
+ (builder.Configuration.GetConnectionString("Store"));
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
@@ -25,8 +29,7 @@ builder.Services.AddSession(option =>
     option.Cookie.HttpOnly= true;
     option.Cookie.IsEssential = true;
 });
-builder.Services.AddSingleton<IBookRepository, BookRepository>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+
 builder.Services.AddSingleton<BookService>();
 builder.Services.AddSingleton<OrderService>();
 
