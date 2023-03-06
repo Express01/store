@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,21 +8,42 @@ using System.Threading.Tasks;
 
 namespace Store.Data.EF
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository:IOrderRepository
     {
-        public Task<Order> CreateAsync()
+        private readonly DbContextFactory dbContextFactory;
+
+        public OrderRepository(DbContextFactory dbContextFactory)
         {
-            throw new NotImplementedException();
+            this.dbContextFactory = dbContextFactory;
         }
 
-        public Task<Order> GetByIdAsync(int id)
+        public async Task<Order> CreateAsync()
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(OrderRepository));
+
+            var dto = Order.DtoFactory.Create();
+            dbContext.Orders.Add(dto);
+            await dbContext.SaveChangesAsync();
+
+            return Order.Mapper.Map(dto);
         }
 
-        public Task UpdateAsync(Order order)
+        public async Task<Order> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(OrderRepository));
+
+            var dto = await dbContext.Orders
+                                     .Include(order => order.Items)
+                                     .SingleAsync(order => order.Id == id);
+
+            return Order.Mapper.Map(dto);
+        }
+
+        public async Task UpdateAsync(Order order)
+        {
+            var dbContext = dbContextFactory.Create(typeof(OrderRepository));
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

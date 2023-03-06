@@ -18,6 +18,7 @@
     <ProjectReference Include="..\application\Store.Web.App\Store.Web.App.csproj" />
     <ProjectReference Include="..\plugins\Store.YandexKassa\Store.YandexKassa.csproj" />
     <ProjectReference Include="..\Store.Data.EF\Store.Data.EF.csproj" />
+    <ProjectReference Include="..\Store\Store.csproj" />
   </ItemGroup>
 
 </Project>

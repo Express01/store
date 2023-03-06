@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,26 +9,66 @@ using System.Threading.Tasks;
 
 namespace Store.Data.EF
 {
-    public class BookRepository : IBookRepository
+    public class BookRepository:IBookRepository
     {
-        public Task<Book[]> GetAllByIdsAsync(IEnumerable<int> bookIds)
+        private readonly DbContextFactory dbContextFactory;
+
+        public BookRepository(DbContextFactory dbContextFactory)
         {
-            throw new NotImplementedException();
+            this.dbContextFactory = dbContextFactory;
         }
 
-        public Task<Book[]> GetAllByIsbnAsync(string isbn)
+        public async Task<Book[]> GetAllByIdsAsync(IEnumerable<int> bookIds)
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+
+            var dtos = await dbContext.Books
+                                      .Where(book => bookIds.Contains(book.Id))
+                                      .ToArrayAsync();
+
+            return dtos.Select(Book.Mapper.Map)
+                       .ToArray();
         }
 
-        public Task<Book[]> GetAllByTitleOrAuthorAsync(string titleOrAuthor)
+        public async Task<Book[]> GetAllByIsbnAsync(string isbn)
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+
+            if (Book.TryFormatIsbn(isbn, out string formattedIsbn))
+            {
+                var dtos = await dbContext.Books
+                                          .Where(book => book.Isbn == formattedIsbn)
+                                          .ToArrayAsync();
+
+                return dtos.Select(Book.Mapper.Map)
+                           .ToArray();
+            }
+
+            return new Book[0];
         }
 
-        public Task<Book> GetByIdAsync(int id)
+        public async Task<Book[]> GetAllByTitleOrAuthorAsync(string titleOrAuthor)
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+
+            var parameter = new SqlParameter("@titleOrAuthor", titleOrAuthor);
+            var dtos = await dbContext.Books
+                                      .FromSqlRaw("SELECT * FROM Books WHERE CONTAINS((Author, Title), @titleOrAuthor)",
+                                                  parameter)
+                                      .ToArrayAsync();
+
+            return dtos.Select(Book.Mapper.Map)
+                       .ToArray();
+        }
+
+        public async Task<Book> GetByIdAsync(int id)
+        {
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+
+            var dto = await dbContext.Books
+                                     .SingleAsync(book => book.Id == id);
+
+            return Book.Mapper.Map(dto);
         }
     }
 }
