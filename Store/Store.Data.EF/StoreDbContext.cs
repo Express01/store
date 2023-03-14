@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Store.Data.EF
 {
-    public class StoreDbContext:DbContext
+    public class StoreDbContext:IdentityDbContext<ApplicationUser>
     {
         public DbSet<BookDto> Books { get; set; }
 
@@ -26,6 +27,7 @@ namespace Store.Data.EF
             BuildBooks(modelBuilder);
             BuildOrders(modelBuilder);
             BuildOrderItems(modelBuilder);
+            base.OnModelCreating(modelBuilder);
         }
         private void BuildOrderItems(ModelBuilder modelBuilder)
         {

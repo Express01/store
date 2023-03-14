@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Store;
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddEfRepositories
  (builder.Configuration.GetConnectionString("Store"));
 builder.Services.AddDistributedMemoryCache();
@@ -30,8 +32,23 @@ builder.Services.AddSession(option =>
     option.Cookie.IsEssential = true;
 });
 
+
 builder.Services.AddSingleton<BookService>();
 builder.Services.AddSingleton<OrderService>();
+
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+    options.Lockout.AllowedForNewUsers = true;
+    options.Password.RequiredLength = 10;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireDigit = false;
+
+}
+)
+    .AddEntityFrameworkStores<StoreDbContext>();
+builder.Services.AddRazorPages();
+
 
 
 var app = builder.Build();
@@ -50,7 +67,10 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
+app.MapRazorPages();
+
 
 app.MapControllerRoute(
     name: "default",

@@ -16,7 +16,7 @@ namespace Store.YandexKassa.Areas.YandexKassa.Controllers
 
             return View(model);
         }
-
+        [HttpPost]
         public IActionResult Callback(int orderId, string returnUri)
         {
             var model = new ExampleModel
@@ -25,7 +25,7 @@ namespace Store.YandexKassa.Areas.YandexKassa.Controllers
                 ReturnUri = returnUri,
             };
 
-            return View(model);
+            return View("Finish",model);
         }
     }
 }
